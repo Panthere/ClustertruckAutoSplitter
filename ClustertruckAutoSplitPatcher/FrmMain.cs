@@ -31,7 +31,7 @@ namespace CTPatcher
                     {
                         txtInstall.Text = ofd.FileName;
                         // force update
-                        ps.dllPath = ofd.FileName;
+                        ps.DllPath = ofd.FileName;
                         controller.pSettings = ps;
 
                         
@@ -51,9 +51,12 @@ namespace CTPatcher
         {
             try
             {
-                ps.isByLevel = rbByLevel.Checked;
-                ps.pipeName = txtPipeName.Text.IsEmpty() ? "LiveSplit" : txtPipeName.Text;
-                ps.sleepTime = txtSleepMax.Text.ToInt();
+                ps.LevelModeEnabled = rbByLevel.Checked;
+                ps.ResetEnabled = chkReset.Checked;
+                ps.PauseEnabled = chkPause.Checked;
+
+                ps.PipeName = txtPipeName.Text.IsEmpty() ? "LiveSplit" : txtPipeName.Text;
+                ps.SleepTime = txtSleepMax.Text.ToInt();
 
                 controller.pSettings = ps;
 
@@ -62,9 +65,6 @@ namespace CTPatcher
                 controller.Write();
 
                 MessageBox.Show("Successfully Patched!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                //System.Diagnostics.Process.Start(Application.ExecutablePath);
-                //Environment.Exit(0);
             }
             catch (Exception ex)
             {
@@ -97,8 +97,6 @@ namespace CTPatcher
                     MessageBox.Show("Could not restore some files, please reverify your game files to redownload!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
-                //System.Diagnostics.Process.Start(Application.ExecutablePath);
-                //Environment.Exit(0);
             }
             catch (Exception ex)
             {
@@ -116,10 +114,8 @@ namespace CTPatcher
 
             try
             {
-                //ps.dllPath = @"D:\Steam Games\steamapps\common\ClusterTruck\Clustertruck_Data\Managed\Assembly-CSharp.dll";
-                
-                ps.typeName = "ClustertruckSplit.Main";
-                ps.methodName = "LoadSplitter";
+                ps.TypeName = "ClustertruckSplit.Main";
+                ps.MethodName = "LoadSplitter";
 
 
                 controller = new Patcher(ps);
@@ -150,7 +146,7 @@ namespace CTPatcher
                 try
                 {
                     // force update
-                    ps.dllPath = txtInstall.Text;
+                    ps.DllPath = txtInstall.Text;
                     controller.pSettings = ps;
 
                     
@@ -176,7 +172,7 @@ namespace CTPatcher
 
 
 
-
+        // This is needed because dnlib ... :( I don't know dnlib well enough :'(
         private void Cleanup()
         {
             try

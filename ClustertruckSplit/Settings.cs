@@ -17,9 +17,9 @@ namespace ClustertruckSplit
         {
             SleepTime = 10;
             PipeName = "LiveSplit";
-            IsLevelMode = false;
-            Pause = false;
-            Reset = false;
+            IsLevelMode = bool.Parse("LEVEL");
+            Pause = bool.Parse("PAUSE");
+            Reset = bool.Parse("RESET");
         }
     }
 }

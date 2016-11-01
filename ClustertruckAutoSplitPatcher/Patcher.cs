@@ -15,11 +15,11 @@ namespace CTPatcher
         {
             get
             {
-                return pSettings.dllPath;
+                return pSettings.DllPath;
             }
             set
             {
-                pSettings.dllPath = value;
+                pSettings.DllPath = value;
             }
         }
         public string TypeName { get; set; }
@@ -29,7 +29,7 @@ namespace CTPatcher
         {
             get
             {
-                return File.Exists(Path.GetDirectoryName(pSettings.dllPath) + @"\" + Path.GetFileName(patchDll));
+                return File.Exists(Path.GetDirectoryName(pSettings.DllPath) + @"\" + Path.GetFileName(patchDll));
             }
 
         }
@@ -42,7 +42,7 @@ namespace CTPatcher
 
         public TypeDef infoType;
 
-        
+
         public MethodDef infoCctor;
         public MethodDef injMethod;
         public MethodDef injHookMethod;
@@ -50,8 +50,9 @@ namespace CTPatcher
         public PatchSettings pSettings;
 
 #if DEBUG
-        private string patchDll = Environment.CurrentDirectory + @"\..\..\..\ClustertruckSplit\bin\x86\Debug\ClustertruckSplit.dll";
-        private string unityDll = Environment.CurrentDirectory + @"\..\..\..\ClustertruckSplit\bin\x86\Debug\UnityEngine_patch.dll";
+        // Sadly you will have to replace this yourself if you wish to debug :(
+        private string patchDll = @"D:\GitHub\ClustertruckAutoSplitter\ClustertruckSplit\bin\x86\Debug\ClustertruckSplit.dll";
+        private string unityDll = @"D:\GitHub\ClustertruckAutoSplitter\ClustertruckSplit\bin\x86\Debug\UnityEngine_patch.dll";
 #else
         private string patchDll = Environment.CurrentDirectory + @"\ClustertruckSplit.dll"; 
         private string unityDll = Environment.CurrentDirectory + @"\UnityEngine_patch.dll"; 
@@ -61,14 +62,14 @@ namespace CTPatcher
         public Patcher(PatchSettings p)
         {
 
-            TypeName = p.typeName;
-            MethodName = p.methodName;
+            TypeName = p.TypeName;
+            MethodName = p.MethodName;
 
 
 
             ReloadDll(patchDll);
 
-           
+
         }
 
         public void CopyDependencies()
@@ -102,7 +103,7 @@ namespace CTPatcher
             {
                 return;
             }
-            string target =  fileName.Replace(".dll", "_backup.dll");
+            string target = fileName.Replace(".dll", "_backup.dll");
             if (File.Exists(target))
             {
                 File.Delete(target);
@@ -122,7 +123,7 @@ namespace CTPatcher
                 }
                 File.Move(targetPath, DllPath);
             }
-            
+
 
             targetPath = Path.GetDirectoryName(DllPath) + @"\UnityEngine_backup.dll";
             string unityPath = Path.GetDirectoryName(DllPath) + @"\UnityEngine.dll";
@@ -134,7 +135,7 @@ namespace CTPatcher
                 }
                 File.Move(targetPath, unityPath);
             }
-           
+
 
             File.Delete(Path.GetDirectoryName(DllPath) + @"\" + Path.GetFileName(patchDll));
             return true;
@@ -152,7 +153,7 @@ namespace CTPatcher
             }
 
         }
-        
+
         public void Unpatch()
         {
 
@@ -167,9 +168,9 @@ namespace CTPatcher
 
         private void ReloadDll(string fileName)
         {
-            
+
             injModule = ModuleDefMD.Load(fileName);
-            
+
             TypeDef injClass = injModule.Find(TypeName, false);
             if (injClass == null)
                 throw new NullReferenceException("injClass");
@@ -205,18 +206,27 @@ namespace CTPatcher
                 if (inst.OpCode == OpCodes.Ldc_I4_S && ((SByte)inst.Operand) == 10)
                 {
                     // sleep time
-                    settingsMeth.Body.Instructions[i].Operand = (SByte)pSettings.sleepTime;
+                    settingsMeth.Body.Instructions[i].Operand = (SByte)pSettings.SleepTime;
 
-                }
-                else if (inst.OpCode == OpCodes.Ldc_I4_0)
-                {
-                    // by level bool
-                    settingsMeth.Body.Instructions[i].OpCode = pSettings.isByLevel ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0;
                 }
                 else if (inst.OpCode == OpCodes.Ldstr)
                 {
-                    // pipe name
-                    settingsMeth.Body.Instructions[i].Operand = pSettings.pipeName;
+                    switch ((string)inst.Operand)
+                    {
+                        case "LEVEL":
+                            settingsMeth.Body.Instructions[i].Operand = pSettings.LevelModeEnabled.ToString();
+                            break;
+                        case "PAUSE":
+                            settingsMeth.Body.Instructions[i].Operand = pSettings.PauseEnabled.ToString();
+                            break;
+                        case "RESET":
+                            settingsMeth.Body.Instructions[i].Operand = pSettings.ResetEnabled.ToString();
+                            break;
+                        case "LiveSplit":
+                            settingsMeth.Body.Instructions[i].Operand = pSettings.PipeName;
+                            break;
+                    }
+                    
                 }
             }
 

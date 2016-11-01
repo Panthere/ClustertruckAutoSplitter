@@ -7,13 +7,15 @@ namespace CTPatcher
 {
     public class PatchSettings
     {
-        public string dllPath;
-        public string typeName;
-        public string methodName;
-        public string pipeName;
+        public string DllPath;
+        public string TypeName;
+        public string MethodName;
+        public string PipeName;
 
-        public int sleepTime;
-        public bool isByLevel;
+        public int SleepTime;
 
+        public bool LevelModeEnabled;
+        public bool ResetEnabled;
+        public bool PauseEnabled;
     }
 }
