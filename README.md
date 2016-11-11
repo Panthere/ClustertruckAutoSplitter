@@ -2,7 +2,7 @@
 An AutoSplitter for Clustertruck. Utilizes LiveSplit.Server
 Currently under testing, works for most people though.
 
-**NOT APPROVED FOR OFFICIAL RUNS YET**
+**APPROVED FOR OFFICIAL RUNS**
 
 
 
