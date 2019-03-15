@@ -77,7 +77,7 @@ namespace ClustertruckSplit
 
 
             // TODO: Fix bug with dying and splitting...
-            if ((info.playing && !OldPlaying) && (info.currentLevel == 1))
+            if ((info.playing && !OldPlaying) && (info.currentLevel % 10 == 1))
             {
 
                 if (Variables.CurrentPlayer != null)
